@@ -74,9 +74,9 @@ int SpeedDown(Motor *m){
     Serial.println("The motor is off");
   else
   {
-    -- m->rate;
-    m->rate = m->rate >> 1;
     ++ m->rate;
+    m->rate = m->rate >> 1;
+    -- m->rate;
     if(m->rate <=  0)
       m->rate = 0;
     }
