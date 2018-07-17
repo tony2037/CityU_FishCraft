@@ -22,9 +22,11 @@ class Motor{
   public:
     int PWM;
     int DIR;
+    short int rate;
     Motor(int PWM, int DIR){
       this->PWM = PWM;
       this->DIR = DIR;
+      this->rate = 0;
       };
   };
 
