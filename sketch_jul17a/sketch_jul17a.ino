@@ -54,6 +54,13 @@ m : The motor choosing
   analogWrite(m.PWM, PWM);
 }
 
+int Left(){
+  // Turn off the left motor
+
+  // Turn on the right motor
+  return 0;
+}
+
 
 void setup() {
   // put your setup code here, to run once:
