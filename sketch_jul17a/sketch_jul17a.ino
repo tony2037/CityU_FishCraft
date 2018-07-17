@@ -56,30 +56,31 @@ m : The motor choosing
   analogWrite(m.PWM, PWM);
 }
 
-int SpeedUp(Motor m){
-  if(m.rate >= 255)
+int SpeedUp(Motor *m){
+  if(m->rate >= 255)
     Serial.println("The motor is full load");
   else
   {
-    m.rate += 1;
-    m.rate << 1;
-    m.rate -= 1;
-    if(m.rate >= 255)
-      m.rate = 255;
+    ++ m->rate;
+    m->rate = m->rate << 1;
+    -- m->rate;
+    if(m->rate >= 255)
+      m->rate = 255;
     }
   }
 
-int SpeedDown(Motor m){
-  if(m.rate <= 0)
+int SpeedDown(Motor *m){
+  if(m->rate <= 0)
     Serial.println("The motor is off");
   else
   {
-    m.rate -= 1;
-    m.rate >> 1;
-    m.rate += 1;
-    if(m.rate <=  0)
-      m.rate = 0;
+    -- m->rate;
+    m->rate = m->rate >> 1;
+    ++ m->rate;
+    if(m->rate <=  0)
+      m->rate = 0;
     }
+  return 0;
   }
 
 int Left(){
@@ -87,7 +88,7 @@ int Left(){
   // Slow down the left motor
   MotorPWM(Left, 0);
   // Strength the right motor
-  SpeedUp(Right);
+  SpeedUp(&Right);
   return 0;
 }
 
@@ -96,7 +97,7 @@ int Right(){
   // Slow down the right motor
   MotorPWM(Right, 0);
   // Strength the left motor
-  SpeedUp(Left);
+  SpeedUp(&Left);
   return 0;
 }
 
