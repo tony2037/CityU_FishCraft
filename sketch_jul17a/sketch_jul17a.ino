@@ -44,6 +44,8 @@ class Motor{
       this->PWM = PWM;
       this->DIR = DIR;
       this->rate = 0;
+      MotorDirection(1);
+      MotorPWM(0);
       };
 
     int SpeedUp(){
