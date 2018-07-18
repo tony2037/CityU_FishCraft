@@ -87,13 +87,24 @@ class Motor{
   MotorPWM(0);
   return 0;
         };
-  };
+  
+
+  int Maintain();{
+    MotorPWM(127);
+    return 0;
+  }
 
 Motor Left(L_PWM, L_DIR);
 Motor Right(R_PWM, R_DIR);
 Motor Middle(M_PWM, M_DIR);
 
-
+int ForWard(){
+  Serial.println("Going Forward");
+  // Maintain the power of both right and left motors
+  Left.Maintain();
+  Right.Maintain();
+  return 0;
+};
 
 int LeftWard(){
   Serial.println("Turning Left");
