@@ -84,15 +84,21 @@ class Motor{
     };
 
     int ShutDown(){
-  MotorPWM(0);
-  return 0;
-        };
+    MotorPWM(0);
+    return 0;
+    };
   
-
-  int Maintain();{
+    int Maintain(){
     MotorPWM(127);
     return 0;
-  }
+    };
+
+    int REVERSE_Maintain(){
+    MotorPWM(-127);
+    return 0;
+    };
+  
+};
 
 Motor Left(L_PWM, L_DIR);
 Motor Right(R_PWM, R_DIR);
@@ -105,6 +111,14 @@ int ForWard(){
   Right.Maintain();
   return 0;
 };
+
+int BackWard(){
+  Serial.println("Going Backward");
+  // Maintain the both power motor as an opposite to the 'ForWard'
+  Left.REVRSE_Maintain();
+  Right.REVRSE_Maintain();
+  return 0;
+}
 
 int LeftWard(){
   Serial.println("Turning Left");
