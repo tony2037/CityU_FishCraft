@@ -40,13 +40,16 @@ class Motor{
   public:
     int PWM;
     int DIR;
-    short int rate;
+    short int rate; // The rate of the motor now
+    short int direct; // The direction of the motor now
+    
     Motor(int PWM, int DIR){
       this->PWM = PWM;
       this->DIR = DIR;
       this->rate = 0;
-      MotorDirection(1);
-      MotorPWM(0);
+      this->direct = 1;
+      MotorDirection(this->direct);
+      MotorPWM(this->rate);
       };
 
     int SpeedUp(){
@@ -93,8 +96,12 @@ class Motor{
     return 0;
     };
 
-    int REVERSE_Maintain(){
-    MotorPWM(-127);
+    int ReverseMaintain(){
+    // inverse the direction of the motor first
+    this->direct = !this->direct;
+    MotorDirection(this->direct);
+    //Maintain();
+    Maintain();
     return 0;
     };
   
@@ -115,8 +122,8 @@ int ForWard(){
 int BackWard(){
   Serial.println("Going Backward");
   // Maintain the both power motor as an opposite to the 'ForWard'
-  Left.REVRSE_Maintain();
-  Right.REVRSE_Maintain();
+  Left.ReverseMaintain();
+  Right.ReverseMaintain();
   return 0;
 }
 
@@ -142,6 +149,8 @@ int RightWard(){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Left.ReverseMaintain();
+  Right.ReverseMaintain();
 }
 
 
