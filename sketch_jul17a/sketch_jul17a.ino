@@ -59,6 +59,9 @@ class Motor{
       if(this->rate >= 255)
         this->rate = 255;
       }
+
+    MotorPWM(this->rate);
+    return 0;
         };
 
      int SpeedDown(){
@@ -72,6 +75,8 @@ class Motor{
       if(this->rate <=  0)
         this->rate = 0;
       }
+
+    MotorPWM(this->rate);
     return 0;
     };
 
