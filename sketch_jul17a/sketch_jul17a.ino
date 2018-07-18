@@ -92,16 +92,20 @@ class Motor{
     };
   
     int Maintain(){
-    MotorPWM(127);
+    // Change the direction of the motor
+    this->direct = 0;
+    MotorDirection(this->direct);
+    // Set up the rate to 127
+    MotorPWM(63);
     return 0;
     };
 
     int ReverseMaintain(){
-    // inverse the direction of the motor first
-    this->direct = !this->direct;
-    MotorDirection(this->direct);
-    //Maintain();
+    // Maintain();
     Maintain();
+    // Inverse the direction
+    this->rate = !this->rate;
+    MotorDirection(this->direct);
     return 0;
     };
   
@@ -149,8 +153,8 @@ int RightWard(){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  Left.ReverseMaintain();
-  Right.ReverseMaintain();
+  for(int i = 0; i < 5; ++i)
+    RightWard();
 }
 
 
