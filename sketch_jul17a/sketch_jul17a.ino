@@ -56,21 +56,29 @@ m : The motor choosing
   analogWrite(m.PWM, PWM);
 }
 
-int SpeedUp(Motor m){
-  if(m.rate >= 255)
+int SpeedUp(Motor *m){
+  if(m->rate >= 255)
     Serial.println("The motor is full load");
   else
   {
-    m.rate += 1;
-    m.rate << 1;
-    m.rate -= 1;
-    if(m.rate >= 255)
-      m.rate = 255;
+    Serial.print("Speed up the motor");
+    Serial.println(m->rate);
+    int temp = m->rate;
+    temp++;
+    temp << 1;
+    temp--;
+    if(temp >= 255)
+      m->rate = 255;
+    else 
+      m->rate = temp;
     }
+  Serial.println("The motor speed");
+  Serial.println(m->rate);
+  analogWrite(m->PWM, m->rate);
   }
 
 int SpeedDown(Motor m){
-  if(m.rate <= 0)
+  if(m.rate < 0)
     Serial.println("The motor is off");
   else
   {
@@ -80,23 +88,24 @@ int SpeedDown(Motor m){
     if(m.rate <=  0)
       m.rate = 0;
     }
+  analogWrite(m.PWM, m.rate);
   }
 
-int Left(){
+int LeftWard(){
   Serial.println("Turning Left");
   // Slow down the left motor
   MotorPWM(Left, 0);
   // Strength the right motor
-  SpeedUp(Right);
+  SpeedUp(&Right);
   return 0;
 }
 
-int Right(){
+int RightWard(){
   Serial.println("Turning Right");
   // Slow down the right motor
   MotorPWM(Right, 0);
   // Strength the left motor
-  SpeedUp(Left);
+  SpeedUp(&Left);
   return 0;
 }
 
@@ -104,14 +113,22 @@ int Right(){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);   
-  Serial.println(Left.PWM);
+  /*
   MotorDirection(Left, 1);
+  MotorDirection(Right, 1);
+  MotorDirection(Middle, 1);
   MotorPWM(Left, 255);
+  LeftWard();
+  */
+  MotorDirection(Left, 1);
+  MotorDirection(Right, 1);
+  MotorDirection(Middle, 1);
+  //analogWrite(Left.PWM, 255);
+  LeftWard();
 }
 
 
 
 void loop() { 
   // put your main code here, to run repeatedly:
-
 }
