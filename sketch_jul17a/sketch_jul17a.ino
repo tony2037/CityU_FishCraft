@@ -95,7 +95,7 @@ class Motor{
     // Change the direction of the motor
     this->direct = 0;
     MotorDirection(this->direct);
-    // Set up the rate to 127
+    // Set up the rate to 63
     MotorPWM(63);
     return 0;
     };
