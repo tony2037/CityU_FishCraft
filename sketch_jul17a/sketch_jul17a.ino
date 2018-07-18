@@ -11,6 +11,7 @@ Middle-Motor:
 A2 : 21
 D7 : 10
 */
+
 int L_PWM = 11;
 int L_DIR = 12;
 int R_PWM = 10;
@@ -61,6 +62,7 @@ class Motor{
       }
 
     MotorPWM(this->rate);
+    Serial.println(this->rate);
     return 0;
         };
 
@@ -77,6 +79,7 @@ class Motor{
       }
 
     MotorPWM(this->rate);
+    Serial.println(this->rate);
     return 0;
     };
 
@@ -86,9 +89,9 @@ class Motor{
         };
   };
 
-Motor Left = Motor(L_PWM, L_DIR);
-Motor Right = Motor(R_PWM, R_DIR);
-Motor Middle = Motor(M_PWM, M_DIR);
+Motor Left(L_PWM, L_DIR);
+Motor Right(R_PWM, R_DIR);
+Motor Middle(M_PWM, M_DIR);
 
 
 
@@ -99,7 +102,7 @@ int LeftWard(){
   // Strength the right motor
   Right.SpeedUp();
   return 0;
-}
+};
 
 int RightWard(){
   Serial.println("Turning Right");
@@ -108,18 +111,16 @@ int RightWard(){
   // Strength the left motor
   Left.SpeedUp();
   return 0;
-}
+};
 
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);   
-  Serial.println(Left.PWM);
+  Serial.begin(9600);
 }
 
 
 
 void loop() { 
   // put your main code here, to run repeatedly:
-
 }
