@@ -37,6 +37,7 @@ class Motor{
   //PWM : The direction of the motor using analog mode
     analogWrite(this->PWM, PWM);
   };
+  
   public:
     int PWM;
     int DIR;
@@ -62,7 +63,6 @@ class Motor{
       }
 
     MotorPWM(this->rate);
-    Serial.println(this->rate);
     return 0;
         };
 
@@ -79,20 +79,21 @@ class Motor{
       }
 
     MotorPWM(this->rate);
-    Serial.println(this->rate);
     return 0;
     };
 
     int ShutDown(){
-  MotorPWM(0);
-  return 0;
+    MotorPWM(0);
+    return 0;
         };
   
 
-  int Maintain();{
+  int Maintain(){
     MotorPWM(127);
     return 0;
-  }
+  };
+
+};
 
 Motor Left(L_PWM, L_DIR);
 Motor Right(R_PWM, R_DIR);
