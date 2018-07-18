@@ -61,6 +61,7 @@ int SpeedUp(Motor *m){
     Serial.println("The motor is full load");
   else
   {
+<<<<<<< HEAD
     Serial.print("Speed up the motor");
     Serial.println(m->rate);
     int temp = m->rate;
@@ -71,24 +72,40 @@ int SpeedUp(Motor *m){
       m->rate = 255;
     else 
       m->rate = temp;
+=======
+    ++ m->rate;
+    m->rate = m->rate << 1;
+    -- m->rate;
+    if(m->rate >= 255)
+      m->rate = 255;
+>>>>>>> 227215fafa09dda04545b0a79f17410ae142e4db
     }
   Serial.println("The motor speed");
   Serial.println(m->rate);
   analogWrite(m->PWM, m->rate);
   }
 
+<<<<<<< HEAD
 int SpeedDown(Motor m){
   if(m.rate < 0)
+=======
+int SpeedDown(Motor *m){
+  if(m->rate <= 0)
+>>>>>>> 227215fafa09dda04545b0a79f17410ae142e4db
     Serial.println("The motor is off");
   else
   {
-    m.rate -= 1;
-    m.rate >> 1;
-    m.rate += 1;
-    if(m.rate <=  0)
-      m.rate = 0;
+    ++ m->rate;
+    m->rate = m->rate >> 1;
+    -- m->rate;
+    if(m->rate <=  0)
+      m->rate = 0;
     }
+<<<<<<< HEAD
   analogWrite(m.PWM, m.rate);
+=======
+  return 0;
+>>>>>>> 227215fafa09dda04545b0a79f17410ae142e4db
   }
 
 int LeftWard(){
