@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-
+SoftwareSerial BT_Serial(4, 5);
 /*
 Left-Motor:
 A0 : 19
@@ -172,20 +172,25 @@ int DownWard(){
 // Bluetooth part
 class Bluetooth{
   public:
-    int data;
+    char data;
     Bluetooth(){
-      this->data = 0b0000000;
+      this->data = "";
       };
     ~Bluetooth(){};
 
-    int Listen(){
-      if(Serial.available() > 0){
-        this->data = Serial.read();
-        Serial.println(this->data);
-        return 0;
-        }
+    void Listen(){
+      
+      while(Serial.available() > 0){
+        data = Serial.read();
+        BT_Serial.write(data);
+      }
+      
 
-      return -1;
+      while(BT_Serial.available() > 0){
+        data = BT_Serial.read();
+        Serial.print(data);
+      }
+
       };
   };
 Bluetooth BT = Bluetooth();
@@ -194,12 +199,23 @@ Bluetooth BT = Bluetooth();
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  UpWard(7);
+  BT_Serial.begin(9600);
+  
 }
 
 
+char dataa;
 
 void loop() { 
   // put your main code here, to run repeatedly:
   BT.Listen();
+//  while(Serial.available() > 0){
+//        dataa = Serial.read();
+//        BT_Serial.write(dataa);
+//      }
+//
+//      while(BT_Serial.available() > 0){
+//        dataa = BT_Serial.read();
+//        Serial.print(dataa);
+//      }
 }
