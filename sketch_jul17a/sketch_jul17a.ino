@@ -168,6 +168,19 @@ int DownWard(){
   return 0;  
 };
 
+
+// Bluetooth part
+class Bluetooth{
+  public:
+    int data;
+    Bluetooth(){
+      this->data = 0;
+      };
+    ~Bluetooth(){};
+  };
+
+
+// Arduino part
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
