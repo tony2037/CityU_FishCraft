@@ -98,6 +98,14 @@ class Motor{
     t
     return 0;
     };
+
+    int SetLevel(int level){
+      // level range {0, 8}
+      if(level <0 || level > 8)
+        return -1;
+
+      MotorPWM(pow(2, level) - 1);
+      };
   
 };
 
@@ -145,10 +153,57 @@ int RightWard(){
   return 0;
 };
 
+int UpWard(int level){
+  Middle.SetLevel(level);
+  return 0;  
+};
 
+int DownWard(){
+  // 7/18 2018 We decided not to do this part
+  return 0;  
+};
+
+
+// Bluetooth part
+class BlueTooth{
+  private:
+    String buff;
+  public:
+    BlueTooth(){
+      this->buff = "" ;
+      };
+
+      
+    int test(){return 0;};
+    String Listen(){
+      while (Serial.available()) {
+        this->buff = "";
+            delay(10);  //small delay to allow input buffer to fill
+    
+            char c = Serial.read();  //gets one byte from serial buffer
+            if (c == ';') {
+              break;
+            }  //breaks out of capture loop to print readstring
+            this->buff += c; 
+          } //makes the string readString  
+    
+          if (this->buff.length() >0) {
+            Serial.print("Receive data : ");
+            Serial.println(this->buff); //prints string to serial port out
+            return this->buff;
+          }
+    };
+
+      
+  };
+
+
+
+// Arduino part
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
 }
 
 
