@@ -174,11 +174,21 @@ class Bluetooth{
   public:
     int data;
     Bluetooth(){
-      this->data = 0;
+      this->data = 0b0000000;
       };
     ~Bluetooth(){};
-  };
 
+    int Listen(){
+      if(Serial.available() > 0){
+        this->data = Serial.read();
+        Serial.println(this->data);
+        return 0;
+        }
+
+      return -1;
+      };
+  };
+Bluetooth BT = Bluetooth();
 
 // Arduino part
 void setup() {
@@ -191,4 +201,5 @@ void setup() {
 
 void loop() { 
   // put your main code here, to run repeatedly:
+  BT.Listen();
 }
