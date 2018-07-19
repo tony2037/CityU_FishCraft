@@ -37,16 +37,20 @@ class Motor{
   //PWM : The direction of the motor using analog mode
     analogWrite(this->PWM, PWM);
   };
+  
   public:
     int PWM;
     int DIR;
-    short int rate;
+    short int rate; // The rate of the motor now
+    short int direct; // The direction of the motor now
+    
     Motor(int PWM, int DIR){
       this->PWM = PWM;
       this->DIR = DIR;
       this->rate = 0;
-      MotorDirection(1);
-      MotorPWM(0);
+      this->direct = 1;
+      MotorDirection(this->direct);
+      MotorPWM(this->rate);
       };
 
     int SpeedUp(){
@@ -62,7 +66,6 @@ class Motor{
       }
 
     MotorPWM(this->rate);
-    Serial.println(this->rate);
     return 0;
         };
 
@@ -79,23 +82,30 @@ class Motor{
       }
 
     MotorPWM(this->rate);
-    Serial.println(this->rate);
     return 0;
     };
 
     int ShutDown(){
     MotorPWM(0);
     return 0;
-    };
+        };
+
   
     int Maintain(){
-    MotorPWM(127);
+    // Change the direction of the motor
+    this->direct = 0;
+    MotorDirection(this->direct);
+    // Set up the rate to 63
+    MotorPWM(63);
     return 0;
     };
 
-    int REVERSE_Maintain(){
+    int ReverseMaintain(){
+    // Maintain();
     Maintain();
-    t
+    // Inverse the direction
+    this->rate = !this->rate;
+    MotorDirection(this->direct);
     return 0;
     };
 
@@ -107,6 +117,7 @@ class Motor{
       MotorPWM(pow(2, level) - 1);
       };
   
+
 };
 
 Motor Left(L_PWM, L_DIR);
@@ -124,15 +135,9 @@ int ForWard(){
 int BackWard(){
   Serial.println("Going Backward");
   // Maintain the both power motor as an opposite to the 'ForWard'
-  Left.REVRSE_Maintain();
-  Right.REVRSE_Maintain();
+  Left.ReverseMaintain();
+  Right.ReverseMaintain();
   return 0;
-}
-
-int Turn_Right(){
-  Serial.println("Turnning to the right");
-  // Maintain the right motor and REVERSE the left one
-  
 }
 
 int LeftWard(){
@@ -163,47 +168,10 @@ int DownWard(){
   return 0;  
 };
 
-
-// Bluetooth part
-class BlueTooth{
-  private:
-    String buff;
-  public:
-    BlueTooth(){
-      this->buff = "" ;
-      };
-
-      
-    int test(){return 0;};
-    String Listen(){
-      while (Serial.available()) {
-        this->buff = "";
-            delay(10);  //small delay to allow input buffer to fill
-    
-            char c = Serial.read();  //gets one byte from serial buffer
-            if (c == ';') {
-              break;
-            }  //breaks out of capture loop to print readstring
-            this->buff += c; 
-          } //makes the string readString  
-    
-          if (this->buff.length() >0) {
-            Serial.print("Receive data : ");
-            Serial.println(this->buff); //prints string to serial port out
-            return this->buff;
-          }
-    };
-
-      
-  };
-
-
-
-// Arduino part
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-
+  UpWard(7);
 }
 
 
