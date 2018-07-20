@@ -11,15 +11,16 @@ import android.view.View;
 import android.widget.Button;
 
 
+
 public class MainActivity extends AppCompatActivity {
+
+    private int data = 0b0000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         System.out.println("onCreate success");
-
-        int data = 0;
 
         Button ForWard = (Button) findViewById(R.id.FORWARD); // Get the button object
         Button BackWard = (Button) findViewById(R.id.BACKWARD); // Get the button object
@@ -30,21 +31,29 @@ public class MainActivity extends AppCompatActivity {
         ForWard.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 System.out.println("Forward");
+                data = data | 0b0001000;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
         BackWard.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 System.out.println("Backward");
+                data = data | 0b0000100;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
         LeftWard.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 System.out.println("Leftward");
+                data = data | 0b0000010;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
         RightWard.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 System.out.println("Rightward");
+                data = data | 0b0000001;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
