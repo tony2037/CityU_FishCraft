@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -28,32 +29,72 @@ public class MainActivity extends AppCompatActivity {
         Button RightWard = (Button) findViewById(R.id.RIGHTWARD); // Get the button object
 
         // Build up the button listener
-        ForWard.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                System.out.println("Forward");
-                data = data | 0b0001000;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+        ForWard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    // Button pressed
+                    System.out.println("Forward");
+                    data = data | 0b0001000;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    // Button released
+                    data = data & 0b1110111;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                return false;
             }
         });
-        BackWard.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                System.out.println("Backward");
-                data = data | 0b0000100;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+        BackWard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    // Button pressed
+                    System.out.println("Backward");
+                    data = data | 0b0000100;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    // Button released
+                    data = data & 0b1111011;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                return false;
             }
         });
-        LeftWard.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                System.out.println("Leftward");
-                data = data | 0b0000010;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+        LeftWard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    // Button pressed
+                    System.out.println("Leftward");
+                    data = data | 0b0000010;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    // Button released
+                    data = data & 0b1111101;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                return false;
             }
         });
-        RightWard.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                System.out.println("Rightward");
-                data = data | 0b0000001;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+        RightWard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    // Button pressed
+                    System.out.println("Rightward");
+                    data = data | 0b0000001;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    // Button released
+                    data = data & 0b1111110;
+                    System.out.println("Status : " + Integer.toBinaryString(data));
+                }
+                return false;
             }
         });
 
