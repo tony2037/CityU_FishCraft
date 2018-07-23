@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FishController.iml" filepath="$PROJECT_DIR$/FishController.iml" />
+      <module fileurl="file://C:\Users\teaching\Desktop\CityU_FishCraft\Mobile\FishController\FishController.iml" filepath="C:\Users\teaching\Desktop\CityU_FishCraft\Mobile\FishController\FishController.iml" />
+      <module fileurl="file://C:\Users\teaching\Desktop\CityU_FishCraft\Mobile\FishController\Mobile-FishController.iml" filepath="C:\Users\teaching\Desktop\CityU_FishCraft\Mobile\FishController\Mobile-FishController.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
