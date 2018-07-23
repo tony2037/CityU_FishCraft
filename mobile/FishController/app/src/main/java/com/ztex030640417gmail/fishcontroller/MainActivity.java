@@ -15,7 +15,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int data = 0b0000000;
+    private int data = 0b00000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 8 clicked");
-                data = data | 0b10000000;
+                int direct_state = data & 0b1111;
+                data = (0b1000 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -123,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 7 clicked");
-                data = data | 0b01110000;
+                int direct_state = data & 0b1111;
+                data = (0b0111 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -131,7 +135,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 6 clicked");
-                data = data | 0b01100000;
+                int direct_state = data & 0b1111;
+                data = (0b0110 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -139,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 5 clicked");
-                data = data | 0b01010000;
+                int direct_state = data & 0b1111;
+                data = (0b0101 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -147,7 +155,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 4 clicked");
-                data = data | 0b01000000;
+                int direct_state = data & 0b1111;
+                data = (0b0100 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -155,7 +165,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 3 clicked");
-                data = data | 0b00110000;
+                int direct_state = data & 0b1111;
+                data = (0b0011 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -163,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 5 clicked");
-                data = data | 0b00100000;
+                int direct_state = data & 0b1111;
+                data = (0b0010 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -171,7 +185,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 5 clicked");
-                data = data | 0b00010000;
+                int direct_state = data & 0b1111;
+                data = (0b0001 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 
@@ -179,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public  void onClick(View v){
                 System.out.println("Level 0 clicked");
-                data = data | 0b00000000;
+                int direct_state = data & 0b1111;
+                data = (0b0000 << 4) + direct_state;
+                System.out.println("Status : " + Integer.toBinaryString(data));
             }
         });
 

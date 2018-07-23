@@ -8,16 +8,15 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-configurations.all {
-    resolutionStrategy.force 'com.android.support:support-annotations:27.1.1'
-}
+//configurations.all {
+//    resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
+//}
 
 allprojects {
     repositories {
@@ -28,4 +27,14 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// This block encapsulates custom properties and makes them available to all
+// modules in the project.
+ext {
+    // The following are only a few examples of the types of properties you can define.
+    compileSdkVersion = 26
+    // You can also use this to specify versions for dependencies. Having consistent
+    // versions between modules can avoid behavior conflicts.
+    supportLibVersion = "27.1.1"
 }
