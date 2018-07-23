@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-
+SoftwareSerial BT_Serial(4, 5);
 /*
 Left-Motor:
 A0 : 19
@@ -168,14 +168,54 @@ int DownWard(){
   return 0;  
 };
 
+
+// Bluetooth part
+class Bluetooth{
+  public:
+    char data;
+    Bluetooth(){
+      this->data = "";
+      };
+    ~Bluetooth(){};
+
+    void Listen(){
+      
+      while(Serial.available() > 0){
+        data = Serial.read();
+        BT_Serial.write(data);
+      }
+      
+
+      while(BT_Serial.available() > 0){
+        data = BT_Serial.read();
+        Serial.print(data);
+      }
+
+      };
+  };
+Bluetooth BT = Bluetooth();
+
+// Arduino part
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  UpWard(7);
+  BT_Serial.begin(9600);
+  
 }
 
 
+char dataa;
 
 void loop() { 
   // put your main code here, to run repeatedly:
+  BT.Listen();
+//  while(Serial.available() > 0){
+//        dataa = Serial.read();
+//        BT_Serial.write(dataa);
+//      }
+//
+//      while(BT_Serial.available() > 0){
+//        dataa = BT_Serial.read();
+//        Serial.print(dataa);
+//      }
 }
