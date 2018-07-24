@@ -142,8 +142,8 @@ int BackWard(){
 
 int LeftWard(){
   Serial.println("Turning Left");
-  // Slow down the left motor
-  Left.ShutDown();
+  // Maintain the left motor
+  Left.Maintain();
   // Strength the right motor
   Right.SpeedUp();
   return 0;
@@ -151,8 +151,8 @@ int LeftWard(){
 
 int RightWard(){
   Serial.println("Turning Right");
-  // Slow down the right motor
-  Right.ShutDown();
+  // Maintain the right motor
+  Right.Maintain();
   // Strength the left motor
   Left.SpeedUp();
   return 0;
@@ -165,6 +165,8 @@ int UpWard(int level){
 
 int DownWard(){
   // 7/18 2018 We decided not to do this part
+  // 7/24 We decided to make this part as change the direction of the bottom motors
+  Middle.ReverseMaintain();
   return 0;  
 };
 
