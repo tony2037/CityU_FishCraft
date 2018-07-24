@@ -26,6 +26,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.widget.ArrayAdapter;
 import java.util.Set;
 import java.util.ArrayList;
 
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int data = 0b00000000;
     private BluetoothAdapter myBluetooth = null;
-    private Set pairedDevices;
+    private Set <BluetoothDevice> pairedDevices;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         Button Scan = (Button) findViewById(R.id.Scan);
         Button Discon = (Button) findViewById(R.id.Disconnect);
         ListView devicelist = (ListView)findViewById(R.id.listView);
+
+        // List View
+        //devicelist = pairedDevicesList();
 
         // Direction Buttons object
         Button ForWard = (Button) findViewById(R.id.FORWARD); // Get the button object
@@ -236,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     public void IfSupport(){
         Context context = this;
         PackageManager packageManager = context.getPackageManager();
-        if(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
+        if(!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
             Toast.makeText(this, "BLE NOT SUPPORTED", Toast.LENGTH_SHORT).show();
             System.out.println("BLE NOT SUPPORTED");
             finish();
@@ -254,5 +259,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private ListView pairedDevicesList()
+    {
+        pairedDevices = myBluetooth.getBondedDevices();
+        ArrayList list = new ArrayList();
 
+        if (pairedDevices.size()>0)
+        {
+            for(BluetoothDevice bt : pairedDevices)
+            {
+                list.add(bt.getName() + "\n" + bt.getAddress()); //Get the device's name and the address
+            }
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
+        }
+
+        final ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
+        ListView device_list = null;
+        device_list.setAdapter(adapter);
+        return device_list;
+        //devicelist.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
+
+    }
 }
