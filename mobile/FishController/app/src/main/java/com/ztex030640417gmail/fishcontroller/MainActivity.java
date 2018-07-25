@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.widget.ArrayAdapter;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
 import java.util.Set;
 import java.util.ArrayList;
 
@@ -36,7 +38,31 @@ public class MainActivity extends AppCompatActivity {
     private int data = 0b00000000;
     private BluetoothAdapter myBluetooth = null;
     private Set <BluetoothDevice> pairedDevices;
+    private Set <BluetoothDevice> availableDevices;
 
+
+    ArrayList<String> list = new ArrayList();
+    ArrayAdapter adapter;
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            if(intent == null)
+                return;
+
+            System.out.println("Broadcaste Receive");
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                list.add(deviceName + "\n" + deviceHardwareAddress);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +70,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         System.out.println("onCreate success");
 
+        // Register for broadcasts when a device is discovered.
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
+
+        // Objects about BLE
+        Button Scan = (Button) findViewById(R.id.Scan);
+        Button Discon = (Button) findViewById(R.id.Disconnect);
 
         // BLE SUPPORTED checking
         IfSupport();
         // Set up BLE Adapter
         SetUpBLE();
 
-        // Objects about BLE
-        Button Scan = (Button) findViewById(R.id.Scan);
-        Button Discon = (Button) findViewById(R.id.Disconnect);
         ListView devicelist = (ListView)findViewById(R.id.listView);
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        // Set up the devices list
+        pairedDevicesList(devicelist);
+        devicelist.setAdapter(adapter);
 
         // List View
-        //devicelist = pairedDevicesList();
+        //devicelistView = pairedDevicesList();
 
         // Direction Buttons object
         Button ForWard = (Button) findViewById(R.id.FORWARD); // Get the button object
@@ -74,6 +108,29 @@ public class MainActivity extends AppCompatActivity {
         Button Level2 = (Button) findViewById(R.id.Level2);
         Button Level1 = (Button) findViewById(R.id.Level1);
         Button Level0 = (Button) findViewById(R.id.Level0);
+
+        // Scan button listener
+        Scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                if (pairedDevices.size()>0)
+                {
+                    for(BluetoothDevice bt : pairedDevices)
+                    {
+                        list.add(bt.getName() + "\n" + bt.getAddress()); //Get the device's name and the address
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
 
         // Build up the button listener
         ForWard.setOnTouchListener(new View.OnTouchListener() {
@@ -250,16 +307,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter myBluetooth = BTManager.getAdapter();
+        myBluetooth = BTManager.getAdapter();
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            Toast.makeText(this, "Adapter is not enabled", Toast.LENGTH_SHORT).show();
             System.out.println("Adapter is not enabled");
+        }
+        if(!myBluetooth.startDiscovery()){
+            System.out.println("Adapter is not discovering");
+            Toast.makeText(this, "Adapter is not discovering", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
-    private ListView pairedDevicesList()
+    private ListView pairedDevicesList(ListView device_list)
     {
         pairedDevices = myBluetooth.getBondedDevices();
         ArrayList list = new ArrayList();
@@ -277,10 +340,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
-        ListView device_list = null;
+        //ListView device_list = null;
         device_list.setAdapter(adapter);
         return device_list;
-        //devicelist.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
+        //devicelistView.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
 
     }
+
 }
