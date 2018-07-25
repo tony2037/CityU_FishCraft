@@ -1,12 +1,14 @@
 package com.ztex030640417gmail.fishcontroller;
 
 import android.content.Intent;
+import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.text.NumberFormat;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,11 +28,18 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothSocket;
+import android.bluetooth.BluetoothServerSocket;
 import android.widget.ArrayAdapter;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.io.IOException;
+import android.util.Log;
+import com.ztex030640417gmail.fishcontroller.ConnectThread;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +52,36 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> list = new ArrayList();
     ArrayAdapter adapter;
+
+    private final BluetoothGattCallback gattCallback= new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newStae){
+            Log.i("onConnectStateChange", "Status:" + status);
+            switch (newStae){
+                case BluetoothProfile.STATE_DISCONNECTED:
+                    Log.e("gattCallback", "STATE_CONNECTED");
+                    gatt.discoverServices();
+                    break;
+                case BluetoothProfile.STATE_DISCONNECTED:
+                    Log.e("gattCallback", "STATE_DISCONNECTED");
+                    break;
+                default:
+                    Log.e("gattCallback", "STATE_OTHER");
+            }
+        }
+
+        @Override
+         public void onServicesDiscovered(BluetoothGatt gatt, int status){
+            List<BluetoothGattService> services = gatt.getServices();
+            Log.i("onServicesDiscovered", services.toString());
+            gatt.readCharacteristic(services.get(0).getCharacteristics().get(0));
+        }
+
+         @Override
+        public void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status){
+             Log.i("onCharacteristic Read", characteristic.toString());
+         }
+    };
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -59,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
                 list.add(deviceName + "\n" + deviceHardwareAddress);
+                //pairedDevices.add(device);
                 adapter.notifyDataSetChanged();
             }
         }
@@ -308,6 +348,8 @@ public class MainActivity extends AppCompatActivity {
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         myBluetooth = BTManager.getAdapter();
+        BluetoothDevice device = myBluetooth.getRemoteDevice("fdsfsd");
+        device.connectGatt(this, false, gattCallback);
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -348,3 +390,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
