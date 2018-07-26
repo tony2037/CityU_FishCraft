@@ -30,6 +30,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothGatt;
 import android.widget.ArrayAdapter;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
@@ -39,6 +40,8 @@ import java.util.List;
 import java.util.UUID;
 import java.io.IOException;
 import android.util.Log;
+import java.util.UUID;
+import java.nio.ByteBuffer;
 import com.ztex030640417gmail.fishcontroller.ConnectThread;
 
 
@@ -46,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
     private int data = 0b00000000;
     private BluetoothAdapter myBluetooth = null;
+    private BluetoothGatt mGatt = null;
     private Set <BluetoothDevice> pairedDevices;
     private Set <BluetoothDevice> availableDevices;
+    private String Bluetooth_MAC_address = ""; // put the arduino mac address here
+    private String serviceUUID = "";   // Our service UUID
 
 
     ArrayList<String> list = new ArrayList();
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newStae){
             Log.i("onConnectStateChange", "Status:" + status);
             switch (newStae){
-                case BluetoothProfile.STATE_DISCONNECTED:
+                case BluetoothProfile.STATE_CONNECTED:
                     Log.e("gattCallback", "STATE_CONNECTED");
                     gatt.discoverServices();
                     break;
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 default:
                     Log.e("gattCallback", "STATE_OTHER");
+                    break;
             }
         }
 
@@ -181,6 +188,12 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Forward");
                     data = data | 0b00001000;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
+                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(serviceUUID));
+
+                    characteristic.setValue(ByteBuffer.allocate(2).putInt(data).array());
+                    mGatt.writeCharacteristic(characteristic);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
@@ -348,8 +361,8 @@ public class MainActivity extends AppCompatActivity {
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         myBluetooth = BTManager.getAdapter();
-        BluetoothDevice device = myBluetooth.getRemoteDevice("fdsfsd");
-        device.connectGatt(this, false, gattCallback);
+        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address);
+        mGatt = device.connectGatt(this, false, gattCallback);
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
