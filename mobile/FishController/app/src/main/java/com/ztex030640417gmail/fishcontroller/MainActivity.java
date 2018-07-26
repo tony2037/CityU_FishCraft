@@ -52,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothGatt mGatt = null;
     private Set <BluetoothDevice> pairedDevices;
     private Set <BluetoothDevice> availableDevices;
-    private String Bluetooth_MAC_address = ""; // put the arduino mac address here
-    private String serviceUUID = "";   // Our service UUID
+    private String Bluetooth_MAC_address = "88:C2:55:1C:77:4D"; // put the arduino mac address here
+    private String serviceUUID = "0000ffe0-0000-1000-8000-00805f9b34fb";   // Our service UUID
+    // start with 0000; end with -0000-1000-8000-00805f9b34fb
+    private String characteristicUUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
 
 
     ArrayList<String> list = new ArrayList();
@@ -190,9 +192,10 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Status : " + Integer.toBinaryString(data));
 
                     BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
-                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(serviceUUID));
+                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(characteristicUUID));
 
-                    characteristic.setValue(ByteBuffer.allocate(2).putInt(data).array());
+                    byte [] b = ByteBuffer.allocate(4).putInt(Integer.valueOf(String.valueOf(data), 16)).array();
+                    characteristic.setValue(b);
                     mGatt.writeCharacteristic(characteristic);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
@@ -361,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         myBluetooth = BTManager.getAdapter();
-        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address);
+        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address); // Porblem is here, getting crashed
         mGatt = device.connectGatt(this, false, gattCallback);
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
@@ -400,6 +403,13 @@ public class MainActivity extends AppCompatActivity {
         return device_list;
         //devicelistView.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
 
+    }
+
+    private void sendData(int data){
+        BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(serviceUUID));
+        characteristic.setValue(ByteBuffer.allocate(2).putInt(data).array());
+        mGatt.writeCharacteristic(characteristic);
     }
 
 }
