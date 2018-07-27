@@ -1,12 +1,14 @@
 package com.ztex030640417gmail.fishcontroller;
 
 import android.content.Intent;
+import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.text.NumberFormat;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,9 +28,21 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothSocket;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothGatt;
 import android.widget.ArrayAdapter;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.io.IOException;
+import android.util.Log;
+import java.util.UUID;
+import java.nio.ByteBuffer;
+import com.ztex030640417gmail.fishcontroller.ConnectThread;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,9 +50,73 @@ public class MainActivity extends AppCompatActivity {
     private int data = 0b00000000;
 
     private BluetoothAdapter myBluetooth = null;
+    private BluetoothGatt mGatt = null;
     private Set <BluetoothDevice> pairedDevices;
+    private Set <BluetoothDevice> availableDevices;
+    private String Bluetooth_MAC_address = "88:C2:55:1C:77:4D"; // put the arduino mac address here
+    private String serviceUUID = "0000ffe0-0000-1000-8000-00805f9b34fb";   // Our service UUID
+    // start with 0000; end with -0000-1000-8000-00805f9b34fb
+    private String characteristicUUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
 
+
+    ArrayList<String> list = new ArrayList();
+    ArrayAdapter adapter;
+
+    private final BluetoothGattCallback gattCallback= new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newStae){
+            Log.i("onConnectStateChange", "Status:" + status);
+            switch (newStae){
+                case BluetoothProfile.STATE_CONNECTED:
+                    Log.e("gattCallback", "STATE_CONNECTED");
+                    gatt.discoverServices();
+                    break;
+                case BluetoothProfile.STATE_DISCONNECTED:
+                    Log.e("gattCallback", "STATE_DISCONNECTED");
+                    break;
+                default:
+                    Log.e("gattCallback", "STATE_OTHER");
+                    break;
+            }
+        }
+
+<<<<<<< HEAD
 >>>>>>> 259aee63e57218049d5dd647c7a1430416a68f1c
+=======
+        @Override
+         public void onServicesDiscovered(BluetoothGatt gatt, int status){
+            List<BluetoothGattService> services = gatt.getServices();
+            Log.i("onServicesDiscovered", services.toString());
+            gatt.readCharacteristic(services.get(0).getCharacteristics().get(0));
+        }
+
+         @Override
+        public void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status){
+             Log.i("onCharacteristic Read", characteristic.toString());
+         }
+    };
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            if(intent == null)
+                return;
+
+            System.out.println("Broadcaste Receive");
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                list.add(deviceName + "\n" + deviceHardwareAddress);
+                //pairedDevices.add(device);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
+>>>>>>> e88808c19d57d92bcb951bb7ac42c9a0973255b2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +125,31 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onCreate success");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+        // Register for broadcasts when a device is discovered.
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
+
+        // Objects about BLE
+        Button Scan = (Button) findViewById(R.id.Scan);
+        Button Discon = (Button) findViewById(R.id.Disconnect);
+>>>>>>> e88808c19d57d92bcb951bb7ac42c9a0973255b2
 
         // BLE SUPPORTED checking
         IfSupport();
         // Set up BLE Adapter
         SetUpBLE();
 
-        // Objects about BLE
-        Button Scan = (Button) findViewById(R.id.Scan);
-        Button Discon = (Button) findViewById(R.id.Disconnect);
         ListView devicelist = (ListView)findViewById(R.id.listView);
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        // Set up the devices list
+        pairedDevicesList(devicelist);
+        devicelist.setAdapter(adapter);
 
         // List View
-        //devicelist = pairedDevicesList();
+        //devicelistView = pairedDevicesList();
 
 >>>>>>> 259aee63e57218049d5dd647c7a1430416a68f1c
         // Direction Buttons object
@@ -80,6 +169,29 @@ public class MainActivity extends AppCompatActivity {
         Button Level1 = (Button) findViewById(R.id.Level1);
         Button Level0 = (Button) findViewById(R.id.Level0);
 
+        // Scan button listener
+        Scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                if (pairedDevices.size()>0)
+                {
+                    for(BluetoothDevice bt : pairedDevices)
+                    {
+                        list.add(bt.getName() + "\n" + bt.getAddress()); //Get the device's name and the address
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
+
         // Build up the button listener
         ForWard.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -89,6 +201,13 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Forward");
                     data = data | 0b00001000;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
+                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(characteristicUUID));
+
+                    byte [] b = ByteBuffer.allocate(4).putInt(Integer.valueOf(String.valueOf(data), 16)).array();
+                    characteristic.setValue(b);
+                    mGatt.writeCharacteristic(characteristic);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
@@ -255,16 +374,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter myBluetooth = BTManager.getAdapter();
+        myBluetooth = BTManager.getAdapter();
+        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address); // Porblem is here, getting crashed
+        mGatt = device.connectGatt(this, false, gattCallback);
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            Toast.makeText(this, "Adapter is not enabled", Toast.LENGTH_SHORT).show();
             System.out.println("Adapter is not enabled");
+        }
+        if(!myBluetooth.startDiscovery()){
+            System.out.println("Adapter is not discovering");
+            Toast.makeText(this, "Adapter is not discovering", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
-    private ListView pairedDevicesList()
+    private ListView pairedDevicesList(ListView device_list)
     {
         pairedDevices = myBluetooth.getBondedDevices();
         ArrayList list = new ArrayList();
@@ -282,10 +409,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
-        ListView device_list = null;
+        //ListView device_list = null;
         device_list.setAdapter(adapter);
         return device_list;
-        //devicelist.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
+        //devicelistView.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
 
     }
+
+    private void sendData(int data){
+        BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(serviceUUID));
+        characteristic.setValue(ByteBuffer.allocate(2).putInt(data).array());
+        mGatt.writeCharacteristic(characteristic);
+    }
+
 }
+
