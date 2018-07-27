@@ -191,17 +191,14 @@ public class MainActivity extends AppCompatActivity {
                     data = data | 0b00001000;
                     System.out.println("Status : " + Integer.toBinaryString(data));
 
-                    BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
-                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(characteristicUUID));
-
-                    byte [] b = ByteBuffer.allocate(4).putInt(Integer.valueOf(String.valueOf(data), 16)).array();
-                    characteristic.setValue(b);
-                    mGatt.writeCharacteristic(characteristic);
+                    sendData(data);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
                     data = data & 0b11110111;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 return false;
             }
@@ -214,11 +211,15 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Backward");
                     data = data | 0b00000100;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
                     data = data & 0b11111011;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 return false;
             }
@@ -231,11 +232,15 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Leftward");
                     data = data | 0b00000010;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
                     data = data & 0b11111101;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 return false;
             }
@@ -248,11 +253,15 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Rightward");
                     data = data | 0b00000001;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                     // Button released
                     data = data & 0b11111110;
                     System.out.println("Status : " + Integer.toBinaryString(data));
+
+                    sendData(data);
                 }
                 return false;
             }
@@ -364,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
     public void SetUpBLE(){
         final BluetoothManager BTManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         myBluetooth = BTManager.getAdapter();
-        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address); // Porblem is here, getting crashed
+        BluetoothDevice device = myBluetooth.getRemoteDevice(this.Bluetooth_MAC_address);
         mGatt = device.connectGatt(this, false, gattCallback);
         final int REQUEST_ENABLE_BT = 1;
         if(myBluetooth == null || !myBluetooth.isEnabled()){
@@ -373,11 +382,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Adapter is not enabled", Toast.LENGTH_SHORT).show();
             System.out.println("Adapter is not enabled");
         }
-        if(!myBluetooth.startDiscovery()){
-            System.out.println("Adapter is not discovering");
-            Toast.makeText(this, "Adapter is not discovering", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+//        if(!myBluetooth.startDiscovery()){
+//            System.out.println("Adapter is not discovering");
+//            Toast.makeText(this, "Adapter is not discovering", Toast.LENGTH_SHORT).show();
+//            finish();
+//        }
     }
 
     private ListView pairedDevicesList(ListView device_list)
@@ -405,11 +414,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendData(int data){
+    private boolean sendData(int data){
         BluetoothGattService service = mGatt.getService(UUID.fromString(serviceUUID));
-        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(serviceUUID));
-        characteristic.setValue(ByteBuffer.allocate(2).putInt(data).array());
-        mGatt.writeCharacteristic(characteristic);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(characteristicUUID));
+
+        //byte [] b = ByteBuffer.allocate(4).putInt(Integer.valueOf(String.valueOf(data), 16)).array();
+        byte [] b = new byte[1];
+        b[0] = (byte)data;
+        characteristic.setValue(b);
+        boolean success = mGatt.writeCharacteristic(characteristic);
+        return success;
     }
 
 }

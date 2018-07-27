@@ -172,9 +172,9 @@ int DownWard(){
 // Bluetooth part
 class Bluetooth{
   public:
-    char data;
+    byte data;
     Bluetooth(){
-      this->data = "";
+      this->data = 0;
       };
     ~Bluetooth(){};
 
