@@ -189,8 +189,22 @@ class Bluetooth{
       while(BT_Serial.available() > 0){
         data = BT_Serial.read();
         Serial.print(data);
+        Parse(data);
       }
 
+      };
+
+    void Parse(byte data){
+      // Parse forward
+      if(data & 0b00001000)
+        ForWard();
+      if(data & 0b00000100)
+        BackWard();
+      if(data & 0b00000010)
+        LeftWard();
+      if(data & 0b00000001)
+        RightWard();
+      
       };
   };
 Bluetooth BT = Bluetooth();
