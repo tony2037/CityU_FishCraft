@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.bluetooth.BluetoothAdapter;
@@ -147,16 +148,12 @@ public class MainActivity extends AppCompatActivity {
         Button LeftWard = (Button) findViewById(R.id.LEFTWARD); // Get the button object
         Button RightWard = (Button) findViewById(R.id.RIGHTWARD); // Get the button object
 
-        // Level Buttons object
-        Button Level8 = (Button) findViewById(R.id.Level8);
-        Button Level7 = (Button) findViewById(R.id.Level7);
-        Button Level6 = (Button) findViewById(R.id.Level6);
-        Button Level5 = (Button) findViewById(R.id.Level5);
-        Button Level4 = (Button) findViewById(R.id.Level4);
-        Button Level3 = (Button) findViewById(R.id.Level3);
-        Button Level2 = (Button) findViewById(R.id.Level2);
-        Button Level1 = (Button) findViewById(R.id.Level1);
-        Button Level0 = (Button) findViewById(R.id.Level0);
+        // Height Buttons object
+        Button UpWard = (Button) findViewById(R.id.UPWARD);
+        Button DownWard = (Button) findViewById(R.id.DOWNWARD);
+
+        // Power Button object
+        Button Power = (Button) findViewById(R.id.POWER);
 
         // Scan button listener
         Scan.setOnClickListener(new View.OnClickListener() {
@@ -267,96 +264,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Level button listener
-        Level8.setOnClickListener(new View.OnClickListener(){
+        // Height button listener
+        UpWard.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public  void onClick(View v){
-                System.out.println("Level 8 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b1000 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    data = (data & 0b00001111) + (0b0001 << 4);
+                    // It should be 0001xxxx
+                    System.out.println("Status : Upward : " + data);
+
+                    sendData(data);
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    data = (data & 0b00001111) + (0b0100 << 4);
+                    // It should be 0100xxxx
+                    System.out.println("Status : Maintain height : " + data);
+                    sendData(data);
+                }
+                return false;
             }
         });
 
-        Level7.setOnClickListener(new View.OnClickListener(){
+        DownWard.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public  void onClick(View v){
-                System.out.println("Level 7 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0111 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    data = (data & 0b00001111) + (0b0010 << 4);
+                    // It should be 0010xxxx
+                    System.out.println("Status : Downward : " + data);
+
+                    sendData(data);
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    data = (data & 0b00001111) + (0b0100 << 4);
+                    // It should be 0100xxxx
+                    System.out.println("Status : Maintain height : " + data);
+                    sendData(data);
+                }
+                return false;
             }
         });
 
-        Level6.setOnClickListener(new View.OnClickListener(){
+        // Power button listener
+        Power.setOnClickListener(new View.OnClickListener() {
             @Override
-            public  void onClick(View v){
-                System.out.println("Level 6 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0110 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
+            public void onClick(View view) {
+                data = 0b00000000;
+                System.out.println("Status : Power down " + data);
+
+                sendData(data);
             }
         });
 
-        Level5.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 5 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0101 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
-
-        Level4.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 4 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0100 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
-
-        Level3.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 3 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0011 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
-
-        Level2.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 5 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0010 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
-
-        Level1.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 5 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0001 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
-
-        Level0.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void onClick(View v){
-                System.out.println("Level 0 clicked");
-                int direct_state = data & 0b1111;
-                data = (0b0000 << 4) + direct_state;
-                System.out.println("Status : " + Integer.toBinaryString(data));
-            }
-        });
 
     }
 

@@ -54,15 +54,17 @@ class Motor{
       };
 
     int SpeedUp(){
-    if(this->rate >= 255)
+    if(this->rate >= 511){
       Serial.println("The motor is full load");
+      this->rate = 511;
+      }
     else
     {
       ++ this->rate;
       this->rate = this->rate << 1;
       -- this->rate;
-      if(this->rate >= 255)
-        this->rate = 255;
+      if(this->rate >= 511)
+        this->rate = 511;
       }
 
     MotorPWM(this->rate);
@@ -70,8 +72,11 @@ class Motor{
         };
 
      int SpeedDown(){
-    if(this->rate <= 0)
+    if(this->rate <= 0){
       Serial.println("The motor is off");
+      this->rate = 0;
+      this->direct = !this->direct;
+      }
     else
     {
       ++ this->rate;
@@ -81,6 +86,7 @@ class Motor{
         this->rate = 0;
       }
 
+    MotorDirection(this->direct);
     MotorPWM(this->rate);
     return 0;
     };
@@ -93,10 +99,10 @@ class Motor{
   
     int Maintain(){
     // Change the direction of the motor
-    this->direct = 0;
+    this->direct = 1;
     MotorDirection(this->direct);
-    // Set up the rate to 63
-    MotorPWM(63);
+    // Set up the rate to 255
+    MotorPWM(255);
     return 0;
     };
 
@@ -104,7 +110,7 @@ class Motor{
     // Maintain();
     Maintain();
     // Inverse the direction
-    this->rate = !this->rate;
+    this->direct = !this->direct;
     MotorDirection(this->direct);
     return 0;
     };
@@ -144,6 +150,8 @@ int LeftWard(){
   Serial.println("Turning Left");
   // Slow down the left motor
   Left.ShutDown();
+  // Make the direction correct
+  Right.Maintain();
   // Strength the right motor
   Right.SpeedUp();
   return 0;
@@ -153,6 +161,8 @@ int RightWard(){
   Serial.println("Turning Right");
   // Slow down the right motor
   Right.ShutDown();
+  // Make sure the direction correct
+  Left.Maintain();
   // Strength the left motor
   Left.SpeedUp();
   return 0;
@@ -165,6 +175,13 @@ int UpWard(int level){
 
 int DownWard(){
   // 7/18 2018 We decided not to do this part
+  return 0;  
+};
+
+int ShutdownEveryMotor(){
+  Left.ShutDown();
+  Right.ShutDown();
+  Middle.ShutDown();
   return 0;  
 };
 
@@ -194,8 +211,11 @@ class Bluetooth{
 
       };
 
+    // Assume that direct 1 : up
     void Parse(byte data){
-      // Parse forward
+      if(data == 0)
+        ShutdownEveryMotor();
+      // Parse flate direction
       if(data & 0b00001000)
         ForWard();
       if(data & 0b00000100)
@@ -204,6 +224,32 @@ class Bluetooth{
         LeftWard();
       if(data & 0b00000001)
         RightWard();
+
+      // parsing height
+      if(data & 0b01000000){
+        // Maintain height
+        }
+      else if(data & 0b00010000){
+        // upward
+        if(Middle.direct){
+          Middle.SpeedUp();
+          }
+        else{
+          Middle.SpeedDown();
+          }
+        }
+      else if(data & 0b00100000){
+        // downward
+        if(Middle.direct){
+          Middle.SpeedDown();
+          }
+        else{
+          Middle.SpeedUp();
+          }
+        }
+      else{
+        Middle.ShutDown();  
+        }
       
       };
   };
@@ -214,7 +260,6 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   BT_Serial.begin(9600);
-  
 }
 
 
