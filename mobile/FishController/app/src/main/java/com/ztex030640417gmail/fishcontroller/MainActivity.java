@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(mReceiver, filter);
 
         // Objects about BLE
-        Button Scan = (Button) findViewById(R.id.Scan);
-        Button Discon = (Button) findViewById(R.id.Disconnect);
+        //Button Scan = (Button) findViewById(R.id.Scan);
+        //Button Discon = (Button) findViewById(R.id.Disconnect);
 
         // BLE SUPPORTED checking
         IfSupport();
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         // Power Button object
         Button Power = (Button) findViewById(R.id.POWER);
 
+        /*
         // Scan button listener
         Scan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-        });
+        });*/
 
         // Build up the button listener
         ForWard.setOnTouchListener(new View.OnTouchListener() {

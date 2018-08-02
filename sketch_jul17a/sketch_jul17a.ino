@@ -102,7 +102,7 @@ class Motor{
     this->direct = 1;
     MotorDirection(this->direct);
     // Set up the rate to 255
-    MotorPWM(255);
+    MotorPWM(127);
     return 0;
     };
 
