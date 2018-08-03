@@ -64,6 +64,7 @@ There're 7 buttons take care of the main functions :
 What I hope is that give users more intuitional experience ><
 
 Afterward, My parner has made GUI looks better, including : style, icon ... etc
+
 Testing
 ---
 After testing, the fish can fly well, Thanks for everybody show up in the stage of my summer trip in CityU, The memory will keep in our mind forever, looking forward for the time we meet again in the future. Ztex
