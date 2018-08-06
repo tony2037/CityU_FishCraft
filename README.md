@@ -73,3 +73,7 @@ Preliminary Competition
 ---
 We passed the preliminary competition ~~~~~2018.8.6~~~~~
 ![image](cityU-prelimanary.gif)
+
+Fasten your seat belt ~ We r taking off ~~
+![image](cityU-preliminary-taking off.gif)
+[Ztex 6.8.2018]
