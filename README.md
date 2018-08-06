@@ -68,3 +68,8 @@ Afterward, My parner has made GUI looks better, including : style, icon ... etc
 Testing
 ---
 After testing, the fish can fly well, Thanks for everybody show up in the stage of my summer trip in CityU, The memory will keep in our mind forever, looking forward for the time we meet again in the future. Ztex
+
+Preliminary Competition
+---
+We passed the preliminary competition ~~~~~2018.8.6~~~~~
+![image](cityU-prelimanary.gif)
