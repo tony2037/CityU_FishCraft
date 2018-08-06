@@ -76,6 +76,6 @@ We passed the preliminary competition ~~~~~2018.8.6~~~~~
 
 Fasten your seat belt ~ We r taking off ~~
 
-![image](cityU-preliminary-takingoff.gif)
+![image](cityU-preliminary-taking-off.gif)
 
 [Ztex 6.8.2018]
