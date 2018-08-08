@@ -1,6 +1,6 @@
 Champion
 ===
-Thanks for everyone here, we have achieved this ~~~ CHAMP ^o^
+Thanks for everyone here, we have achieved this ~~~ CHAMP ^o^      Ztex 8.8.2018
 ![](final_.jpg)
 ![](final_2.jpg)
 ![](final_3.jpg)
