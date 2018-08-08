@@ -1,6 +1,6 @@
-Champion
+1 st runner up
 ===
-Thanks for everyone here, we have achieved this ~~~ CHAMP ^o^      Ztex 8.8.2018
+Thanks for everyone here, we have achieved this ~~~ 1 st runner up ^o^  (thx for Ms.Vincy remind me)    Ztex 8.8.2018
 ![](final_.jpg)
 ![](final_2.jpg)
 ![](final_3.jpg)
